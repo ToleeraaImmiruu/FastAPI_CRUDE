@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class PostCreate(BaseModel):
-  title: str 
-  content: str
-  year:int 
+  name: str 
+  description: str
+  price: float
+  quantity: int
   

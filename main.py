@@ -18,10 +18,12 @@ def get_db():
 
 # saving to the database
 def init_db():
-    db = session()
-    for pro in text_post.values():
-        db.add(db_models.Product(**pro))
-    db.commit()
+    db = session() 
+    count = db.query(db_models.Product).count
+    if count == 0:
+        for pro in text_post.values():
+            db.add(db_models.Product(**pro))
+        db.commit()
 
 init_db()  
 
@@ -31,6 +33,7 @@ init_db()
 def get_all_posts(db:Session = Depends(get_db)):
 
     db_product = db.query(db_models.Product).all()
+    db.commit()
     return db_product
 
 
@@ -41,38 +44,46 @@ def get_posts_by_id(id: int, db:Session = Depends(get_db)):
     db_product = db.query(db_models.Product).filter(db_models.Product.id == id).first()
     if db_product:
         return db_product
+    db.commit()
     return "product not found"
     
 
-# post from the CRUDE
 
+# adding the product to the database 
 
 @app.post("/posts")
-def create_post(post: PostCreate):
-    new_post = {"title": post.title,
-                "content": post.content, "Year": post.year}
-    text_post[max(text_post.keys()) + 1] = new_post
-    return new_post
+def add_product(post: PostCreate, db: Session = Depends(get_db)):
+    db.add(db_models.Product(**post.model_dump()))
+    db.commit()
+    return post
 
 # for the update the product
 
 
 @app.put("/update/{id}")
-def update_product(id: int, pro: PostCreate):
-    if id not in text_post:
-        raise HTTPException(status_code=404, detail="Post not found")
-    # update the existing product
-    text_post[id] = {"title": pro.title,
-                    "content": pro.content, "year": pro.year}
-    
-    return {"message": "post updated successfully", "updated_post": text_post[id]}
+def update_product(id: int, pro: PostCreate, db: Session = Depends(get_db)):
+    db_product = db.query(db_models.Product).filter(db_models.Product.id == id).first()
+    if db_product:
+        db_product.name= pro.name
+        db_product.description= pro.description
+        db_product.price = pro.price
+        db_product.quantity = pro.quantity
+        db.commit()
+        return "product updated {db_product} "
+
+    else:
+        return "No product updated "    
 
 
 
 #  for the delete product 
 @app.delete("/delete/{id}")
-def delete_product(id:int ):
-    if  id not in text_post:
-        raise HTTPException(status_code =404,detail="post not found")
-    del text_post[id] 
-    return { "message":"the product was deleted successfully",}
+def delete_product(id:int , db: Session = Depends(get_db)):
+    db_product = db.query(db_models.Product).filter(db_models.Product.id == id).first()
+
+    if db_product:
+        db.delete(db_product)
+        db.commit()
+        return "The product successfully deleted from the database:{db_product}"
+    else:
+        return "The product was not exist in the data base"
