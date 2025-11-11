@@ -4,7 +4,6 @@ from db import session, engine
 import db_models
 from sqlalchemy.orm import  Session
 app = FastAPI()
-
 db_models.Base.metadata.create_all(bind=engine)
 text_post = {
     1: {"name": "New Product to db", "description": "Cool product", "price": 10.5, "quantity": 5},
