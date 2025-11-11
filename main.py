@@ -7,7 +7,7 @@ app = FastAPI()
 
 db_models.Base.metadata.create_all(bind=engine)
 text_post = {
-    1: {"name": "New Product", "description": "Cool product", "price": 10.5, "quantity": 5},
+    1: {"name": "New Product to db", "description": "Cool product", "price": 10.5, "quantity": 5},
     2: {"name": "Another Product", "description": "Another cool product", "price": 20.0, "quantity": 10}
 }
 
