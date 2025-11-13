@@ -5,5 +5,5 @@ class PostCreate(BaseModel):
   name: str 
   description: str
   price: float
-  quantity: int
+  quantity: float  
   
