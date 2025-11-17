@@ -22,7 +22,6 @@ def init_db():
         for pro in text_post.values():
             db.add(db_models.Product(**pro))
         db.commit()
-
 init_db()  
 
 # get from the CRUDE
