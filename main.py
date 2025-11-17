@@ -23,7 +23,6 @@ def init_db():
             db.add(db_models.Product(**pro))
         db.commit()
 init_db()  
-
 # get from the CRUDE
 
 @app.get("/posts")
