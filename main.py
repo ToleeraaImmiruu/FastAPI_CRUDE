@@ -13,7 +13,6 @@ def get_db():
     db = session()
     yield db 
     db.close()
-
 # saving to the database
 def init_db():
     db = session() 
