@@ -3,6 +3,7 @@ from schema import PostCreate
 from db import session, engine
 import db_models
 from sqlalchemy.orm import  Session
+
 app = FastAPI()
 db_models.Base.metadata.create_all(bind=engine)
 text_post = {
